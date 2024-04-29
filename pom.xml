@@ -16,9 +16,8 @@
     <maven.compiler.target>17</maven.compiler.target>
   </properties>
   
-  <!-- TODO -->
   <name>profiler</name>
-  <url></url>
+  <url>https://github.com/basmens/profiler</url>
 
   <modules>
     <module>performance-displayer</module>
