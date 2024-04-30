@@ -102,13 +102,11 @@ public class PerformanceTimer {
     
     // Move on to next segment
     segmentStack.pop();
-    if (nextSegmentName != null) {
-      currentSegment = functionTimer.getSegment(nextSegmentName);
-      segmentStack.push(currentSegment);
-    }
+    currentSegment = functionTimer.getSegment(nextSegmentName);
+    segmentStack.push(currentSegment);
     
     // Discard time of this function to run
-    long functionDuration = System.nanoTime() - functionCallStart;
+    long functionDuration = System.nanoTime() - functionCallStart + AVERAGE_SYSTEM_NANOTIME_DURATION;
     for (SegmentTimeNode s : segmentStack) {
       s.removeDuration(functionDuration);
     }
@@ -128,8 +126,12 @@ public class PerformanceTimer {
       throw new RuntimeException("PerformanceTimer cannot be stopped, it has already been stopped");
     }
 
-    // Stop timer
-    nextSegment(null);
+    // Add duration to current segment
+    currentSegment.addDuration(functionCallStart - lastTimeStamp);
+    lastTimeStamp = functionCallStart;
+    
+    // No new segment
+    segmentStack.pop();
     currentSegment = null;
     
     // Discard time of functions of the timer to run
